@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * Concatenar array(item1,item2,item3,item4) para string ="('item1','item2','item3','item4')";
+ */
+$String_Com_Aspas_Virgula = "('". implode("','", $arrDados) . "')";
+    
+/**
  * Retirar Acentos
  */
 $string="olá | à | ñ | calçada | CALÇADA";
