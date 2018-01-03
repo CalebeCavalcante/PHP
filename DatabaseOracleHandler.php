@@ -129,8 +129,9 @@ Class Database {
 
     public function tratarWhere($field, $value){
 
-        if( strpos(trim($value), "LIKE") == true ) return " AND $field $value ";
-        if( strpos(trim($value), "BETWEEN") == true ) return " AND $field $value ";
+        if( strpos($value, "LIKE") == true ) return " AND $field $value ";
+        if( strpos($value, "BETWEEN") == true ) return " AND $field $value ";
+        if( preg_match("/SELECT.*FROM/i", $value) ) return " AND $field IN ( $value )";
         if( is_array($value) ) return " AND $field IN( '". implode("','", $value) . "' ) ";
 
         switch (trim($value)){
@@ -141,6 +142,25 @@ Class Database {
                 return " AND $field IS NOT NULL ";
             default:
                 return " AND $field = '$value' ";
+        }
+
+    }
+
+    public function runSqlLoader( $controlNameFile ){
+        $code = "sqlldr USERID=". $this->usuario . "/" . $this->senha."@QUALITY_10";
+        $code .= ", CONTROL=".$controlNameFile;
+
+        try{
+
+            passthru($code, $returnValue);
+
+            if(!$returnValue) {
+                return true;
+            }else{
+                return $returnValue;
+            }
+        }catch(Exception $e){
+            return $e->getMessage();
         }
 
     }
